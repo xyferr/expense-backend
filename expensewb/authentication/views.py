@@ -63,16 +63,28 @@ class RegistrationView(View):
                 user = User.objects.create_user(username=username,email=email)
                 user.set_password(password)
                 user.is_active=False
-                user.save()
-                email_subject = f"Hi {user.username}, Activate your account"
-                email_body = ""
-                email = EmailMessage(
-                    email_subject,
-                    email_body,
-                    "noreply@semycolon.com",
-                    [user.email],
-                )
+                # user.save()
+                print("User created")
                 messages.success(request,'User created successfully')
+                try:
+                    print()
+                    email_subject = f"Hi {user.username}, Activate your account"
+                    email_body = "Testing email"
+                    email = EmailMessage(
+                        email_subject,
+                        email_body,
+                        "noreply@semycolon.com",
+                        [user.email],
+                    )
+                    email.send(fail_silently=False)
+                    messages.success(request,'Email sent successfully')
+                
+                except Exception as e:
+                    messages.warning(request,'Unable to send email')
+                    print(e)
+                    
+                
+                
         
         return render(request,'authentication/register.html')
     
