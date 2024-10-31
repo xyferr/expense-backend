@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.views import View
 from django.http import JsonResponse
 import json
@@ -7,6 +7,11 @@ from validate_email import validate_email
 from django.contrib import messages
 from django.core.mail import EmailMessage
 
+from django.utils.encoding import force_bytes, DjangoUnicodeDecodeError
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.contrib.sites.shortcuts import get_current_site
+from django.urls import reverse
+from .utils import token_generator
 
 # Create your views here.
 class EmailValidationView(View):
@@ -67,13 +72,22 @@ class RegistrationView(View):
                 print("User created")
                 messages.success(request,'User created successfully')
                 try:
-                    print()
+                    #path to the view
+                    #uid64=force_bytes(urlsafe_base64_encode(user.pk))
+                    domain = get_current_site(request).domain
+                    link = reverse('activate',kwargs={
+                        'uidb64':urlsafe_base64_encode(force_bytes(user.pk)),
+                        'token':token_generator.make_token(user)
+                    })
+                    activate_url = 'http://'+domain+link
+                    
+                    
                     email_subject = f"Hi {user.username}, Activate your account"
-                    email_body = "Testing email"
+                    email_body = 'Hi '+user.username+' Click the link below to activate your account\n'+activate_url
                     email = EmailMessage(
                         email_subject,
                         email_body,
-                        "noreply@semycolon.com",
+                        "ROHIT <star080war@gmail.com>",
                         [user.email],
                     )
                     email.send(fail_silently=False)
@@ -82,11 +96,9 @@ class RegistrationView(View):
                 except Exception as e:
                     messages.warning(request,'Unable to send email')
                     print(e)
-                    
-                
-                
-        
         return render(request,'authentication/register.html')
     
-
+class VerificationView(View):
+    def get(self,request,uidb64,token):
+        return redirect('login')
     
