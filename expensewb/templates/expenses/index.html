@@ -1,17 +1,106 @@
 {% extends "base.html" %}
+{% load static %}
 
 
 {% block content %}
-<h1>Expenses List</h1>
 
-<ul class="list-group">
-    <li class="list-group-item">Bought Beer</li>
-    <li class="list-group-item">Bought Beer</li>
-    <li class="list-group-item">Bought Beer</li>
-    <li class="list-group-item">Bought Beer</li>
-    <li class="list-group-item">Bought Beer</li>
-    <li class="list-group-item">Bought Beer</li>
-    <li class="list-group-item">Bought Beer</li>
-</ul>
+<div class="container mt-4">
+    
+    <div class="row">
+        
+        <div class="col-md-10">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb bg-light p-3">
+                <li class="breadcrumb-item"><a href="#">Expenses</a></li>
+                <li class="breadcrumb-item active" aria-current="page">My Expenses</li>
+                </ol>
+            </nav>
+        </div>
+        
+    
+
+        <div class="col-md-2">
+            <a href="{% url 'add_expense' %}" class="btn btn-primary">Add Expense</a>
+        </div>
+        {% include "partials/_messages.html" %}
+    </div>
+    <div class="container">
+        <div class="row mb-3">
+            <div class="form-group search-box-container">
+                        
+                        
+
+                <input type="text" class="form-control" id="searchField" placeholder="Search">
+            </div>
+        </div>
+        <div class="app-table">
+            <table class="table table-striped table-hover table-horizontal-borders">
+                <thead>
+                    <tr>
+                        <th>Amount  ({{currency}})</th>
+                        <th>Description</th>
+                        <th>Category</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for expns in page_obj %}
+                    <tr>
+                        
+                        <td>{{expns.amount}}</td>
+                        <td>{{expns.description}}</td>
+                        <td>{{expns.category}}</td>
+                        <td>{{expns.date}}</td>
+                        {% comment %} forward to expense-edit url with the expense id {% endcomment %}
+                        
+                        <td><a href="{% url 'edit-expense' expns.id %}" class="btn btn-secondary">Edit</a></td>
+                        {% comment %} <td><a href="{% url 'delete-expense' expns.id %}" class="btn btn-danger">Delete</a></td> {% endcomment %}
+    
+                        
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="table-output">
+            <table class="table table-striped table-hover table-horizontal-borders">
+                <thead>
+                    <tr>
+                        <th>Amount  ({{currency}})</th>
+                        <th>Description</th>
+                        <th>Category</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody class="table-body">
+                    
+                </tbody>
+            </table>
+            
+        </div>
+        <div class="pagination-container">
+            <div class="">
+                Showing Page {{page_obj.number}} of {{page_obj.paginator.num_pages}}
+            </div>
+            <ul class="pagination justify-content-end">
+                {% if page_obj.has_previous %}
+                <li {% if page_obj.number == 1 %} class="page-item active" {% endif %}> <a class="page-link" href="?page=1">&laquo; 1</a></li>
+                <li class ="page-item"><a class="page-link" href="?page={{page_obj.previous_page_number}}">Previous</a></li>
+                {% endif %}
+                {% if page_obj.has_next %}
+                <li class ="page-item"><a class="page-link" href="?page={{page_obj.next_page_number}}">Next</a></li>
+                <li class ="page-item"><a class="page-link" href="?page={{page_obj.paginator.num_pages}}"> {{page_obj.paginator.num_pages}} &raquo; </a></li>
+                {% endif %}
+                
+
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script src={% static "js/searchExpense.js" %}></script>
 
 {% endblock content %}
+
+
+

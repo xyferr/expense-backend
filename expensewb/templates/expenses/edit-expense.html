@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+
+<div class="container mt-4">
+    <h2>Edit Expense</h2>
+    
+    
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb bg-light p-3">
+        <li class="breadcrumb-item"><a href="#">Expenses</a></li>
+        <li class="breadcrumb-item active" aria-current="page">My Expenses</li>
+        </ol>
+    </nav>
+        
+        {% include "partials/_messages.html" %}
+    
+
+
+
+
+    <div class="card">
+        <form action="{% url 'edit-expense' values.id %}" method="post">
+            {% csrf_token %}
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="">Amount</label>
+                    <input type="number" class="form-control form-control-sm" name="amount" value="{{values.amount}}">
+                </div>
+                <div class="form-group">
+                    <label for="">Description</label>
+                    <input type="text" class="form-control form-control-sm" name="description" value="{{values.description}}">
+                </div>
+                <div class="form-group mb-3">
+                    <label for="category">Category</label>
+                    <select name="category" id="category" class="form-control">
+                        <option value="{{values.category}}">{{values.category}}</option>
+                        <!-- Add more options here -->
+                         {% for cat in categories  %}
+                        <option value="{{cat.name}}">{{cat.name}}</option>
+                         
+                         {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="date">Date of Expense</label>
+                    <input type="date" class="form-control form-control-sm" name="date" value="{{values.date}}">
+                </div>
+                <div class="form-group ">
+                    <input type="submit" value="Submit" class="btn btn-primary btn-sm">
+                </div>
+            </div>
+            
+        </form>
+    </div>
+
+ 
+    
+</div>
+
+<script>
+    // Hide messages after 5 seconds
+    setTimeout(function() {
+        var messages = document.querySelectorAll('.alert');
+        messages.forEach(function(message) {
+            message.style.display = 'none';
+        });
+    }, 5000);
+</script>
+
+{% endblock content %}

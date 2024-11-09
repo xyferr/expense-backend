@@ -14,6 +14,7 @@ from pathlib import Path
 from decouple import config
 from django.contrib.messages import constants as messages
 from dotenv import load_dotenv
+import dj_database_url
 
 MESSAGE_TAGS = {
     messages.ERROR: 'danger',
@@ -44,7 +45,7 @@ SECRET_KEY = 'django-insecure-lgdbd&s)4usdop1vsc)z67=y0ke6w8qq#+1rhhprf0c5jk2^0l
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -57,6 +58,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'expenses',
+    # 'authentication',
+    'userpreferences',
+    'userincome',
 ]
 
 MIDDLEWARE = [
@@ -93,15 +97,8 @@ WSGI_APPLICATION = 'expensewb.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DB_NAME'),
-        'USER': config('DB_USER'),
-        'PASSWORD': config('DB_USER_PASSWORD'),
-        'HOST': config('DB_HOST'),
-    }
-}
+DATABASES = {'default': dj_database_url.config(default=os.environ['DATABASE_URL'], engine='django_cockroachdb')}
+
 
 
 # Password validation
