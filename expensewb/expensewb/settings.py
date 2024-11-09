@@ -96,12 +96,18 @@ WSGI_APPLICATION = 'expensewb.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    'default': dj_database_url.config(default=os.environ['DATABASE_URL'], engine='django_cockroachdb'),
-    'OPTIONS': {
-            'sslmode': 'verify-full',
-            'sslrootcert': os.path.join(BASE_DIR, 'certs', 'root.crt'),
-        },
-    }
+    'default': dj_database_url.config(
+        default=os.environ['DATABASE_URL'],
+        engine='django_cockroachdb',
+        conn_max_age=600,
+        ssl_require=True
+    )
+}
+
+DATABASES['default']['OPTIONS'] = {
+    'sslmode': 'verify-full',
+    'sslrootcert': os.path.join(BASE_DIR, 'certs', 'root.crt'),
+}
 
 
 # Password validation
