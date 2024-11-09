@@ -108,6 +108,8 @@ class RegistrationView(View):
                     )
                     EmailThread(email).start()
                     messages.success(request,'Email sent successfully')
+                    print("email sent")
+                    
                 
                 except Exception as e:
                     messages.warning(request,'Unable to send email')
