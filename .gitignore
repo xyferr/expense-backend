@@ -1,2 +1,7 @@
 myenv
 expensewb/.env
+*.env
+bin/
+lib/
+*.sqlite3
+expensewb/staticfiles_build
