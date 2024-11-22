@@ -117,3 +117,50 @@ def delete_income(request, id):
     income.delete()
     messages.success(request, 'record removed')
     return redirect('income')
+
+
+
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+import io
+import base64
+from django.db.models import Sum
+from django.shortcuts import render
+
+
+def summary_incomes(request):
+    # Get all the expenses of this user and calculate the total for each category
+    incomes = UserIncome.objects.filter(owner=request.user)
+    income_list = incomes.values('source').annotate(total_amount=Sum('amount'))
+
+    # Prepare data for the pie chart
+    categories = [expense['source'] for expense in income_list]
+    amounts = [expense['total_amount'] for expense in income_list]  # Use 'total_amount'
+
+
+    #debug
+    # print(expense_list)
+    # print(expenses)
+    # print(amounts)
+    # print(categories)
+    
+    
+    # Generate the pie chart
+    fig, ax = plt.subplots()
+    ax.pie(amounts, labels=categories, autopct='%1.1f%%', startangle=90)
+    ax.axis('equal')  # Equal aspect ratio ensures the pie is drawn as a circle.
+
+    # Save the plot to a BytesIO object
+    buf = io.BytesIO()
+    plt.savefig(buf, format='png')
+    buf.seek(0)
+    string = base64.b64encode(buf.read()).decode('utf-8')  # Decode to string
+    buf.close()
+    plt.close(fig)  # Close the figure to free memory
+
+    # Prepare the URI for embedding in HTML
+    uri = 'data:image/png;base64,' + string
+
+    return render(request, 'income/summary.html', {'graph': uri})
+   

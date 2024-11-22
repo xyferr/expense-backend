@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+
+
+
+{% block content %}
+<link href="{% static "css/summary.css" %}" rel="stylesheet">
+
+<div class="container mt-4">
+    
+    <div class="row">
+        
+        <div class="col-md-10">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb bg-light p-3">
+                <li class="breadcrumb-item"><a href="#">Summary</a></li>
+                <li class="breadcrumb-item active" aria-current="page">My Expenses</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    <div class="row">
+        <h2>Expense Pie Chart</h1>
+        <img src="{{ graph }}" alt="Expense Pie Chart" class="piechart" style="float:left">
+        
+    </div>
+    <div class="row">
+        <h2>Expense Bar Plot</h2>
+        <img src="{{ graph2 }}" alt="Expense Bar Chart" class="barchart" style="float:left">
+    </div>
+   
+    
+</div>
+{% endblock content %}
